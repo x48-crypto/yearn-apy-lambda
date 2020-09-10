@@ -6,7 +6,7 @@ const delay = require("delay");
 const _ = require("lodash");
 const vaults = require("./vaults");
 const EthDater = require("./ethereum-block-by-date.js");
-const { delayTime, apiKeys } = require('./config');
+const { delayTime, apiKeys } = require("./config");
 
 const archiveNodeUrl = `https://api.archivenode.io/${apiKeys.archiveNode}`;
 const infuraUrl = `https://mainnet.infura.io/v3/${apiKeys.infura}`;
@@ -21,7 +21,7 @@ let threeDaysAgoBlock;
 const oneDayAgo = moment().subtract(1, "days").valueOf();
 const threeDaysAgo = moment().subtract(3, "days").valueOf();
 
-const saveData = async (data) => {
+const saveVault = async (data) => {
   const params = {
     TableName: "vaultApy",
     Item: data,
@@ -30,6 +30,7 @@ const saveData = async (data) => {
     .put(params)
     .promise()
     .catch((err) => console.log("err", err));
+  console.log(`Saved ${data.name}`);
 };
 
 const getApy = async (
@@ -139,6 +140,7 @@ const readVault = async (vault) => {
     vaultSymbol,
     vaultContractABI: abi,
     vaultContractAddress: address,
+    erc20address: tokenAddress,
   } = vault;
   if (!abi || !address) {
     console.log(`Vault ABI not found: ${name}`);
@@ -154,10 +156,11 @@ const readVault = async (vault) => {
     description,
     vaultSymbol,
     description,
+    tokenAddress,
     timestamp: Date.now(),
     ...apy,
   };
-  await saveData(data);
+  await saveVault(data);
   return data;
 };
 
