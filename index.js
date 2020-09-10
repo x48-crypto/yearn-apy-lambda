@@ -158,7 +158,7 @@ const readVault = async (vault) => {
     ...apy,
   };
   // FIX dynamodb ETH has no adddress
-  if (!data.address) data.address = '0x';
+  if (!data.address) data.address = 'ETH';
   await saveData(data);
   return data;
 };
